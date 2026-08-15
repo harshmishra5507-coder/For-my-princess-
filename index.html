@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Princess! 🌸✨</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #fff0f5 0%, #ffb6c1 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; text-align: center; }
+        .card { background: rgba(255, 240, 245, 0.95); padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3); backdrop-filter: blur(10px); border: 3px solid #ff69b4; max-width: 460px; width: 90%; z-index: 10; transition: all 0.5s ease; }
+        img { max-width: 160px; margin-bottom: 15px; border-radius: 20px; border: 2px solid #ffb6c1; }
+        h1, h2 { color: #ff1493; margin-bottom: 15px; line-height: 1.4; text-shadow: 1px 1px 2px rgba(255, 182, 193, 0.5); }
+        p { color: #ff69b4; font-size: 1.05rem; margin-bottom: 20px; font-weight: 500; }
+        .btn-group { display: flex; flex-direction: column; gap: 12px; justify-content: center; align-items: center; width: 100%; }
+        .row-btns { display: flex; flex-direction: row; gap: 15px; height: 70px; align-items: center; justify-content: center; width: 100%; }
+        button { padding: 12px 25px; font-size: 1.1rem; font-weight: bold; border: none; border-radius: 25px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 10px rgba(255, 105, 180, 0.2); }
+        .quiz-btn { background-color: #ffffff; color: #ff69b4; border: 2px solid #ff69b4; width: 100%; }
+        .quiz-btn:hover { background-color: #ff69b4; color: white; transform: scale(1.03); }
+        #yes-btn, #pass-btn, #gate-yes { background-color: #ff1493; color: white; padding: 12px 30px; }
+        #no-btn, #gate-no { background-color: #ffb6c1; color: #ff1493; border: 1px solid #ff69b4; }
+        input { width: 100%; padding: 12px; border-radius: 20px; border: 2px solid #ff69b4; font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none; color: #ff1493; }
+        .hidden { display: none !important; }
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .countdown-timer { font-size: 2rem; font-weight: bold; color: #ff1493; background: #ffffff; padding: 15px; border-radius: 15px; border: 2px dashed #ff69b4; margin: 15px 0; letter-spacing: 1px; }
+        .scroll-box { max-height: 250px; overflow-y: auto; padding-right: 5px; text-align: left; margin-bottom: 15px; }
+        .love-letter { font-size: 1rem; color: #ff1493; line-height: 1.6; margin-bottom: 15px; }
+        .quote { font-style: italic; background: #fff0f5; padding: 10px; border-left: 4px solid #ff1493; margin-top: 10px; border-radius: 0 10px 10px 0; }
+    </style>
+</head>
+<body>
+    <canvas id="heartCanvas"></canvas>
+
+    <!-- STEP -1: COUNTDOWN CARD -->
+    <div class="card" id="countdown-card">
+        <img src="https://giphy.com" alt="Cute Waiting">
+        <h2>Your Birthday Surprise is Loading... ⏳✨</h2>
+        <p>Patience, princess! You cannot enter until the clock hits midnight! 🧸🌸</p>
+        <div class="countdown-timer" id="timer-display">00h 00m 00s</div>
+    </div>
+
+    <!-- STEP 0: PASSWORD CARD -->
+    <div class="card hidden" id="password-card">
+        <img src="https://giphy.com" alt="Teddy Lock">
+        <h2>Enter the Secret Password! 🔒🧸</h2>
+        <p>Only my favourite girl knows the code... 👀🌸</p>
+        <input type="password" id="password-input" placeholder="Type here... 💕">
+        <button id="pass-btn" onclick="checkPassword()">Unlock 🔑</button>
+        <p id="pass-error" style="color: red; margin-top: 10px; font-size: 0.9rem;" class="hidden">Wrong code! Try again dummy 🤪🍼</p>
+    </div>
+
+    <!-- STEP 0.5: THE GATEKEEPER QUESTION -->
+    <div class="card hidden" id="gate-card">
+        <img src="https://giphy.com" alt="Cute Bear">
+        <h2 id="gate-question">Are you ready to see your birthday surprise? 🎁🌸</h2>
+        <div class="row-btns">
+            <button id="gate-yes" onclick="enterQuiz()">Yes! 🥰</button>
+            <button id="gate-no" onclick="triggerDare()">No 🙄</button>
+        </div>
+    </div>
+
+    <!-- STEP 1: CUTE CARTOON QUIZ -->
+    <div class="card hidden" id="quiz-card">
+        <img id="quiz-gif" src="https://giphy.com" alt="Cute text">
+        <h2 id="quiz-question">Question 1: Who is the most dramatic cartoon character in this relationship? 🎭🎀</h2>
+        <div class="btn-group" id="quiz-options">
+            <button class="quiz-btn" onclick="checkAnswer(1)">Definitely Me 🙋‍♂️</button>
+            <button class="quiz-btn" onclick="checkAnswer(2)">You, 100% 🫵🌸</button>
+            <button class="quiz-btn" onclick="checkAnswer(3)">The cute princess reading this right now 👑✨</button>
+        </div>
+    </div>
+
+    <!-- STEP 2: THE PINK PROPOSAL TRAP -->
+    <div class="card hidden" id="proposal-card">
+        <img src="https://giphy.com" alt="Cute Bear">
+        <h2 id="proposal-question">Do you promise to let me cuddle and annoy you for the rest of your life? 🥺🧸💕</h2>
+        <div class="row-btns">
+            <button id="yes-btn">YES, I DO! 💖🐰</button>
+            <button id="no-btn">No 😡🍼</button>
+        </div>
+    </div>
+
+    <!-- STEP 3: THE CELEBRATION REVEAL -->
+    <div class="card hidden" id="celebration-card">
+        <img src="https://giphy.com" alt="Happy Teddy Family">
+        <h1>HAPPY BIRTHDAY MY QUEEN! 👑🍰🎉</h1>
+        <div class="scroll-box">
+            <p class="love-letter"><strong>My Strongest Girl 🌸🧸:</strong> I watch you face the world every single day, and I am endlessly proud of how incredibly strong, resilient, and brave you are. Even when things get tough, you shine brighter than anyone else. Never forget how capable you are.</p>
+            <p class="love-letter">I love you more than all the stars in the universe. Thank you for being my safest home, my sweetest distraction, and my absolute everything. Happy Birthday, My Whole Heart! 💕🎀🌸</p>
+            <div class="quote">"In case you ever foolishly forget: I am never not thinking of you." — Virginia Woolf ✨</div>
+            <div class="quote">"I love you, and I will love you until I die, and if there's a life after that, I'll love you then." 💕</div>
+        </div>
+    </div>
+
+    <script>
+        const SECRET_PASSWORD = "iloveyou"; 
+        const targetDate = new Date();
+        targetDate.setDate(17);
+        targetDate.setMonth(7); 
+        targetDate.setHours(0, 0, 0, 0);
+
+        function updateCountdown() {
+            const now = new Date();
+            const difference = targetDate - now;
+            if (difference <= 0) {
+                document.getElementById('countdown-card').classList.add('hidden');
+                document.getElementById('password-card').classList.remove('hidden');
+                clearInterval(countdownInterval);
+            } else {
+                const hours = Math.floor(difference / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+                document.getElementById('timer-display').innerText = `${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
+            }
+        }
+        updateCountdown();
+        const countdownInterval = setInterval(updateCountdown, 1000);
+
+        function checkPassword() {
+            const userInput = document.getElementById('password-input').value.trim().toLowerCase();
+            if (userInput === SECRET_PASSWORD) {
+                document.getElementById('password-card').classList.add('hidden');
+                document.getElementById('gate-card').classList.remove('hidden');
+            } else {
+                document.getElementById('pass-error').classList.remove('hidden');
+            }
+        }
+
+        function triggerDare() {
+            document.getElementById('gate-question').innerHTML = "How dare you!! 😤💔 <br><br> Fine, I am taking you to the surprise anyway because you have no choice! 🙄💅";
+            setTimeout(() => { enterQuiz(); }, 2500);
+        }
+
+        function enterQuiz() {
+            document.getElementById('gate-card').classList.add('hidden');
+            document.getElementById('quiz-card').classList.remove('hidden');
+        }
+
+        let currentStep = 1;
+        function checkAnswer(optionSelected) {
+            if (currentStep === 1) {
+                document.getElementById('quiz-gif').src = "https://giphy.com";
+                document.getElementById('quiz-question').innerText = "Question 2: How much do you love me today? 🤔🍥💓";
+Use code with caution.document.getElementById('quiz-options').innerHTML = <button class="quiz-btn" onclick="checkAnswer(1)">Only a little bit 🤏🍭</button> <button class="quiz-btn" onclick="checkAnswer(2)">More than bubble tea (huge lie!) 🧋🐱</button> <button class="quiz-btn" onclick="checkAnswer(3)">To the moon and back x100000 🚀💖🍓</button>;currentStep = 2;} else if (currentStep === 2) {document.getElementById('quiz-card').classList.add('hidden');document.getElementById('proposal-card').classList.remove('hidden');}}const yesBtn = document.getElementById('yes-btn');const noBtn = document.getElementById('no-btn');let noCount = 0, yesScale = 1, noScale = 1;noBtn.addEventListener('click', () => {noCount++;const x = (Math.random() - 0.5) * 180;const y = (Math.random() - 0.5) * 180;noBtn.style.transform = translate(${x}px, ${y}px);yesScale += 0.4; noScale -= 0.15;yesBtn.style.transform = scale(${yesScale});if (noScale > 0.2) noBtn.style.transform +=  scale(${noScale}); else noBtn.style.display = 'none';if(noCount === 1) document.getElementById('proposal-question').innerText = "Wrong button babe! Try again! 👀🎀";if(noCount === 2) document.getElementById('proposal-question').innerText = "Wow, okay, rude! Click YES! 😭🍼";if(noCount === 3) document.getElementById('proposal-question').innerText = "Error 404: 'No' is locked forever! ❤️🔐✨";});yesBtn.addEventListener('click', () => {document.getElementById('proposal-card').classList.add('hidden');document.getElementById('celebration-card').classList.remove('hidden');initCelebration();});const canvas = document.getElementById('heartCanvas');const ctx = canvas.getContext('2d');canvas.width = window.innerWidth; canvas.height = window.innerHeight;let particles = [];const shapes = ['heart', 'flower', 'teddy'];class RomanticParticle {constructor() {this.x = canvas.width / 2; this.y = canvas.height / 2;this.size = Math.random() * 12 + 8;this.speedX = (Math.random() - 0.5) * 10;this.speedY = (Math.random() - 0.7) * 10 - 2;this.opacity = 1;this.type = shapes[Math.floor(Math.random() * shapes.length)];this.color = hsl(${Math.random() * 20 + 335}, 100%, 75%);this.rotation = Math.random() * Math.PI * 2;this.rotSpeed = (Math.random() - 0.5) * 0.05;}update() { this.x += this.speedX; this.y += this.speedY; this.rotation += this.rotSpeed; this.opacity -= 0.007; }draw() {ctx.save(); ctx.globalAlpha = this.opacity; ctx.translate(this.x, this.y); ctx.rotate(this.rotation);if (this.type === 'heart') {ctx.fillStyle = this.color; ctx.beginPath(); ctx.moveTo(0, 0);ctx.bezierCurveTo(-this.size/2, -this.size/2, -this.size, this.size/3, 0, this.size);ctx.bezierCurveTo(this.size, this.size/3, this.size/2, -this.size/2, 0, 0); ctx.fill();} else if (this.type === 'flower') {ctx.fillStyle = '#ffb6c1';for (let i = 0; i < 5; i++) { ctx.rotate(Math.PI * 2 / 5); ctx.beginPath(); ctx.arc(0, -this.size/2, this.size/3, 0, Math.PI * 2); ctx.fill(); }ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 0, this.size/4, 0, Math.PI * 2); ctx.fill();} else {ctx.fillStyle = '#e8a7b5'; ctx.beginPath(); ctx.arc(0, 0, this.size/2, 0, Math.PI * 2); ctx.fill();ctx.beginPath(); ctx.arc(-this.size/3, -this.size/3, this.size/4, 0, Math.PI * 2); ctx.fill();ctx.beginPath(); ctx.arc(this.size/3, -this.size/3, this.size/4, 0, Math.PI * 2); ctx.fill();}ctx.restore();}}function initCelebration() { setInterval(() => { for (let i = 0; i < 5; i++) particles.push(new RomanticParticle()); }, 50); animate(); }function animate() {ctx.clearRect(0, 0, canvas.width, canvas.height);for (let i = 0; i < particles.length; i++) { particles[i].update(); particles[i].draw(); if (particles[i].opacity <= 0) { particles.splice(i, 1); i--; } }requestAnimationFrame(animate);}
